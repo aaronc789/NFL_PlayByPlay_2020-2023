@@ -92,22 +92,22 @@ order by wpa desc
 select top 20 passer_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
 where passer_player_name is not null and play_type = 'pass' and week <= 18 
 group by passer_player_name, season
--- Quarterbacks with more than 200 plays
-having count(*) > 200
+-- Quarterbacks with at least 200 plays
+having count(*) >= 200
 order by sum(epa) / count(*) desc
 
 select top 20 receiver_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
 where receiver_player_name is not null and week <= 18
 group by receiver_player_name, season
--- Wide Receivers with more than 75 plays
-having count(*) > 75
+-- Wide Receivers with at least 75 plays
+having count(*) >= 75
 order by sum(epa) / count(*) desc
 
 select top 20 rusher_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
 where rusher_player_name is not null and week <= 18
 group by rusher_player_name, season
--- Running Backs with more than 200 plays
-having count(*) > 200
+-- Running Backs with at least 200 plays
+having count(*) >= 200
 order by avg(epa) desc
 
 
