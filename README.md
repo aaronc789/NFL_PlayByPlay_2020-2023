@@ -117,3 +117,75 @@ set winner =
             end) 
     end)
 ```
+
+### How many pass plays and run plays were recorded?
+```sql
+select count(*) from nfl_pbp
+where play_type in ('pass','run')
+```
+
+### WPA stands for Win Probability Added
+### Find top 20 plays by most WPA in regular season
+```sql
+select top 20 game_id, posteam, season, [desc], wpa
+from nfl_pbp
+where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week <= 18
+order by wpa desc
+```
+
+### Find top 20 plays by most WPA in playoffs
+```sql
+select top 20 game_id, posteam, season, [desc], wpa
+from nfl_pbp
+where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week > 18
+order by wpa desc
+```
+
+### Determine top 20 best QBs by EPA per play within a regular season (Quarterbacks with at least 200 plays)
+```sql
+select top 20 passer_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
+where passer_player_name is not null and play_type = 'pass' and week <= 18 
+group by passer_player_name, season
+having count(*) >= 200
+order by sum(epa) / count(*) desc
+```
+
+### Determine top 20 best WRs by EPA per play within a regular season (Wide Receivers with at least 75 plays)
+```sql
+select top 20 receiver_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
+where receiver_player_name is not null and week <= 18
+group by receiver_player_name, season
+having count(*) >= 75
+order by sum(epa) / count(*) desc
+```
+
+### Determine top 20 best RBs by EPA per play within a regular season (Runningbacks with at least 200 plays)
+```sql
+select top 20 rusher_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
+where rusher_player_name is not null and week <= 18
+group by rusher_player_name, season
+having count(*) >= 200
+order by avg(epa) desc
+```
+
+### DEFENSE: Multiple factors help determine the rankings of teams and how good their defense is
+### -- 1. Which defenses forced the most turnovers?
+### -- 2. Which defenses forced the most negative plays or plays with no yards gained?
+### -- 3. Which defenses allowed the fewest points per game?
+### -- 4. Which defenses allowed the fewest yards per play?
+### -- 5. Determine the best defenses based on all four factors
+```sql
+select defteam, season, 
+rank() over (order by sum(case when [desc] LIKE '%INTERCEPTED%' or [desc] LIKE '%FUMBLE%' then 1.0 else 0.0 end) / count(*) desc) as 'Turnover Rank',
+rank() over (order by sum(case when [desc] like '%incomplete%' or yards_gained <= 0 and defteam is not null and play_type in ('pass','run')  then 1.0 else 0.0 end) / count(*) desc) as 'Dead Play Rank',
+rank() over (order by sum(case when posteam_type = 'home' then home_score else away_score end)*1.0 / count(*)) as 'Scoring Rank',
+rank() over (order by sum(yards_gained) * 1.0 / count(*)) as 'Yards Allowed Rank',
+rank() over(order by (sum(case when [desc] LIKE '%INTERCEPTED%' or [desc] LIKE '%FUMBLE%' then 1.0 else 0.0 end) / count(*) ) +
+                     (sum(case when [desc] like '%incomplete%' or yards_gained <= 0 and defteam is not null and play_type in ('pass','run')  then 1.0 else 0.0 end) / count(*) ) +
+                      sum(case when posteam_type = 'home' then home_score else away_score end)*1.0 / count(*) +
+                      sum(yards_gained) * 1.0 / count(*))  as '(Averaged) Total Defense Rank'
+from nfl_pbp
+where play_type in ('run','pass') and week <= 18
+group by defteam, season
+order by [(Averaged) Total Defense Rank] 
+```
