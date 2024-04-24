@@ -1,7 +1,9 @@
 # <p align="center">NFL_PlayByPlay_2020-2023</p>
 # <p align="center">![Pic](Images/justin_herbert.jpg)</p>
 
-## Using NFL play-by-play data of the past 4 seasons, I analyzed offensive strategies and tried to figure out which offenses or players were most successful, along with figuring out the different factors that could potentially determine a defenses' rankings and increase a teams' win probability.
+### Using NFL play-by-play data of the past 4 seasons, I analyzed offensive strategies and tried to figure out which offenses or players were most successful, along with figuring out the different factors that could potentially determine a defenses' rankings and increase a teams' win probability.
+
+<br>
 
 ### The following is a description of the data columns I will be using:
 **Play_id**: primary key; unique for every instance in the table
@@ -26,7 +28,7 @@
 
 **wpa**: win-probability added; shows how much a team’s chance of winning the game changed as a results of the play
 
-**EPA**: expected points added; advanced stat that determines how well the play was relative to the “expected points” of that play. This stat is very important for this project. Better definition here
+**EPA**: expected points added; advanced stat that determines how well the play was relative to the “expected points” of that play
 
 **Posteam_type**: indicates ‘home’ if the team on offense is the home team, or ‘away’ if the team on offense is the visiting team
 
@@ -41,6 +43,8 @@
 **Play_type**: play that was ran; main types are ‘pass’, ’run’, ’field_goal’, ’extra_point’, ’punt’
 
 **Down**: is either 1, 2, 3, 4; represents what down the play took place during
+
+<br>
 
 ### First, I needed to combine the individual datasets of each NFL season and merge them into one table:
 ```sql
@@ -72,4 +76,44 @@ drop table if exists nfl_pbp
                play_type, away_score, home_score, result, 
                passer_player_name, receiver_player_name, rusher_player_name, score_differential, wpa, epa, down
         from play_by_play_2023) as x
+```
+
+### Need to update result column since certain data did not transfer properly
+```sql
+update nfl_pbp
+set result = home_score - away_score
+```
+
+### Add columns for season and winner
+```sql
+alter table nfl_pbp
+add season int NULL
+
+alter table nfl_pbp
+add winner NVARCHAR(5) NULL
+```
+
+### Season column for the NFL season that starts in September and ends in February
+```sql
+update nfl_pbp
+set season = 
+    (case when month(game_date) <= 2 then year(game_date) - 1 else year(game_date) end)
+```
+
+### Winner column for whether the team on offense ends up winning the game
+```sql
+update nfl_pbp
+set winner = 
+    (case when posteam_type = 'away' 
+        then 
+            (case when result < 0 then 'Yes'			-- away team on offense won
+                  when result > 0 then 'No' 
+				  else 'Tied' 
+            end) 
+        else 
+            (case when result > 0 then 'Yes'			-- home team on offense won
+                  when result < 0 then 'No' 
+				  else 'Tied' 
+            end) 
+    end)
 ```
