@@ -78,7 +78,7 @@ drop table if exists nfl_pbp
         from play_by_play_2023) as x
 ```
 Result:
-![Q1](Images/NFL_Table_Union.png)
+![Q1](Images/NFL_Union_Table.png)
 
 ### Need to update result column since certain data did not transfer properly
 ```sql
