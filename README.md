@@ -78,6 +78,7 @@ drop table if exists nfl_pbp
         from play_by_play_2023) as x
 ```
 Result:
+<br>
 ![Table](Images/NFL_Union_Table.png)
 
 ### Need to update result column since certain data did not transfer properly
@@ -87,6 +88,7 @@ set result = home_score - away_score
 ```
 
 Result:
+<br>
 ![Table](Images/NFL_Result.png)
 
 ### Add columns for season
@@ -103,6 +105,7 @@ set season =
 ```
 
 Result:
+<br>
 ![Table](Images/NFL_Season.png)
 
 ### Add columns for winner
@@ -130,6 +133,7 @@ set winner =
 ```
 
 Result:
+<br>
 ![Table](Images/NFL_Winner.png)
 
 ### How many pass plays and run plays were recorded?
