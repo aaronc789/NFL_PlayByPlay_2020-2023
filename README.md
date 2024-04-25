@@ -1,7 +1,7 @@
 # <p align="center">NFL Play-By-Play Stats 2020-2023</p>
 # <p align="center">![Pic](Images/justin_herbert.jpg)</p>
 
-### Using NFL play-by-play data of the past 4 seasons, I analyzed offensive strategies and tried to figure out which offenses or players were most successful, along with figuring out the different factors that could potentially determine a defenses' rankings and increase a teams' win probability.
+### As a big fan of *Justin Herbert* and the *LA Chargers*, I was curious to see the stats of the NFL since Herbert first entered the league, and the various ways I could clean and manipulate data to answer certain queries. Using NFL play-by-play data of the past 4 seasons, I analyzed offensive strategies and tried to figure out which offenses or players were most successful, along with figuring out the different factors that could potentially determine a defenses' rankings and increase a teams' win probability.
 
 <br>
 
@@ -46,7 +46,7 @@
 
 <br>
 
-### First, I needed to combine the individual datasets of each NFL season between 2020-2023 and merge them into one table:
+### To start off, I first needed to combine the individual datasets of each NFL season between 2020-2023 and merge them into one table:
 ```sql
 drop table if exists nfl_pbp
     select * into nfl_pbp
@@ -78,7 +78,7 @@ drop table if exists nfl_pbp
         from play_by_play_2023) as x
 ```
 Result:
-![Q1](Images/NFL_Union_Table.png)
+![Table](Images/NFL_Union_Table.png)
 
 ### Need to update result column since certain data did not transfer properly
 ```sql
@@ -86,13 +86,13 @@ update nfl_pbp
 set result = home_score - away_score
 ```
 
-### Add columns for season and winner
+Result:
+![Table](Images/NFL_Result.png)
+
+### Add columns for season
 ```sql
 alter table nfl_pbp
 add season int NULL
-
-alter table nfl_pbp
-add winner NVARCHAR(5) NULL
 ```
 
 ### Season column for the NFL season that starts in September and ends in February
@@ -100,6 +100,15 @@ add winner NVARCHAR(5) NULL
 update nfl_pbp
 set season = 
     (case when month(game_date) <= 2 then year(game_date) - 1 else year(game_date) end)
+```
+
+Result:
+![Table](Images/NFL_Season.png)
+
+### Add columns for winner
+```sql
+alter table nfl_pbp
+add winner NVARCHAR(5) NULL
 ```
 
 ### Winner column for whether the team on offense ends up winning the game
@@ -119,6 +128,9 @@ set winner =
             end) 
     end)
 ```
+
+Result:
+![Table](Images/NFL_Winner.png)
 
 ### How many pass plays and run plays were recorded?
 ```sql
