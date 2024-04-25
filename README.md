@@ -1,4 +1,4 @@
-# <p align="center">NFL_PlayByPlay_2020-2023</p>
+# <p align="center">NFL Play-By-Play Stats 2020-2023</p>
 # <p align="center">![Pic](Images/justin_herbert.jpg)</p>
 
 ### Using NFL play-by-play data of the past 4 seasons, I analyzed offensive strategies and tried to figure out which offenses or players were most successful, along with figuring out the different factors that could potentially determine a defenses' rankings and increase a teams' win probability.
@@ -46,7 +46,7 @@
 
 <br>
 
-### First, I needed to combine the individual datasets of each NFL season and merge them into one table:
+### First, I needed to combine the individual datasets of each NFL season between 2020-2023 and merge them into one table:
 ```sql
 drop table if exists nfl_pbp
     select * into nfl_pbp
@@ -77,6 +77,8 @@ drop table if exists nfl_pbp
                passer_player_name, receiver_player_name, rusher_player_name, score_differential, wpa, epa, down
         from play_by_play_2023) as x
 ```
+Result:
+![Q1](Images/NFL_Table_Union)
 
 ### Need to update result column since certain data did not transfer properly
 ```sql
