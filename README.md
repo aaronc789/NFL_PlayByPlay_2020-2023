@@ -149,7 +149,7 @@ Result:
 ### WPA stands for Win Probability Added
 ### Find top 20 plays by most WPA in regular season
 ```sql
-select top 20 game_id, posteam, season, [desc], wpa
+select top 20 game_id, posteam, season, [desc], wpa, winner
 from nfl_pbp
 where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week <= 18
 order by wpa desc
@@ -161,7 +161,7 @@ Result:
 
 ### Find top 20 plays by most WPA in playoffs
 ```sql
-select top 20 game_id, posteam, season, [desc], wpa
+select top 20 game_id, posteam, season, [desc], wpa, winner
 from nfl_pbp
 where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week > 18
 order by wpa desc
