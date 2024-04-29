@@ -210,7 +210,7 @@ Result:
 <br>
 ![Table](Images/NFL_Top20_rb.png)
 
-### DEFENSE: Multiple factors help determine the rankings of teams and how good their defense is
+### DEFENSE: Multiple factors help determine the rankings of teams and how good their defense is. I used the following:
 ### -- 1. Which defenses forced the most turnovers?
 ### -- 2. Which defenses forced the most negative plays or plays with no yards gained?
 ### -- 3. Which defenses allowed the fewest points per game?
