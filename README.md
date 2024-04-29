@@ -137,10 +137,14 @@ Result:
 ![Table](Images/NFL_Winner.png)
 
 ### How many pass plays and run plays were recorded?
-```sql
+```sqloo
 select count(*) from nfl_pbp
 where play_type in ('pass','run')
 ```
+
+Result:
+<br>
+![Table](Images/NFL_total_run_play.png)
 
 ### WPA stands for Win Probability Added
 ### Find top 20 plays by most WPA in regular season
@@ -151,6 +155,10 @@ where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week
 order by wpa desc
 ```
 
+Result:
+<br>
+![Table](Images/NFL_Top20_wpa.png)
+
 ### Find top 20 plays by most WPA in playoffs
 ```sql
 select top 20 game_id, posteam, season, [desc], wpa
@@ -158,6 +166,10 @@ from nfl_pbp
 where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week > 18
 order by wpa desc
 ```
+
+Result:
+<br>
+![Table](Images/NFL_Top20_wpa_playoffs.png)
 
 ### Determine top 20 best QBs by EPA per play within a regular season (Quarterbacks with at least 200 plays)
 ```sql
@@ -168,6 +180,10 @@ having count(*) >= 200
 order by sum(epa) / count(*) desc
 ```
 
+Result:
+<br>
+![Table](Images/NFL_Top20_qb.png)
+
 ### Determine top 20 best WRs by EPA per play within a regular season (Wide Receivers with at least 75 plays)
 ```sql
 select top 20 receiver_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
@@ -177,6 +193,10 @@ having count(*) >= 75
 order by sum(epa) / count(*) desc
 ```
 
+Result:
+<br>
+![Table](Images/NFL_Top20_wr.png)
+
 ### Determine top 20 best RBs by EPA per play within a regular season (Runningbacks with at least 200 plays)
 ```sql
 select top 20 rusher_player_name, season, avg(epa) as 'EPA per play' from nfl_pbp
@@ -185,6 +205,10 @@ group by rusher_player_name, season
 having count(*) >= 200
 order by avg(epa) desc
 ```
+
+Result:
+<br>
+![Table](Images/NFL_Top20_rb.png)
 
 ### DEFENSE: Multiple factors help determine the rankings of teams and how good their defense is
 ### -- 1. Which defenses forced the most turnovers?
@@ -207,3 +231,7 @@ where play_type in ('run','pass') and week <= 18
 group by defteam, season
 order by [(Averaged) Total Defense Rank] 
 ```
+
+Result:
+<br>
+![Table](Images/NFL_Defense.png)
