@@ -138,7 +138,7 @@ Result:
 
 ### How many pass plays and run plays were recorded?
 ```sqloo
-select count(*) from nfl_pbp
+select count(*) as Total_Run_Play from nfl_pbp
 where play_type in ('pass','run')
 ```
 
