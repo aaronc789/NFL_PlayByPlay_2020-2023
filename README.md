@@ -137,7 +137,7 @@ Result:
 ![Table](Images/NFL_Winner.png)
 
 ### How many pass plays and run plays were recorded?
-```sqloo
+```sql
 select count(*) as Total_Run_Play from nfl_pbp
 where play_type in ('pass','run')
 ```
