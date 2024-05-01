@@ -36,19 +36,19 @@ update nfl_pbp
 set result = home_score - away_score
 
 
--- Add columns for season and winner
+-- Add column for season
 alter table nfl_pbp
 add season int NULL
-
-alter table nfl_pbp
-add winner NVARCHAR(5) NULL
-
 
 -- NFL season starts in September and ends in February
 update nfl_pbp
 set season = 
     (case when month(game_date) <= 2 then year(game_date) - 1 else year(game_date) end)
 
+
+-- Add column for winner
+alter table nfl_pbp
+add winner NVARCHAR(5) NULL
 
 -- Whether the team on offense ends up winning the game
 update nfl_pbp
@@ -69,19 +69,19 @@ set winner =
 
 
 -- How many pass plays and run plays were recorded?
-select count(*) from nfl_pbp
+select count(*) as Total_Run_Play from nfl_pbp
 where play_type in ('pass','run')
 
 
 -- WPA stands for Win Probability Added
 -- Find top 20 plays by most WPA in regular season
-select top 20 game_id, posteam, season, [desc], wpa
+select top 20 game_id, posteam, season, [desc], wpa, winner
 from nfl_pbp
 where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week <= 18
 order by wpa desc
 
 -- Find top 20 plays by most WPA in playoffs
-select top 20 game_id, posteam, season, [desc], wpa
+select top 20 game_id, posteam, season, [desc], wpa, winner
 from nfl_pbp
 where play_type not in ('field_goal', 'punt', 'no_play', 'extra_point') and week > 18
 order by wpa desc
